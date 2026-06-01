@@ -170,11 +170,8 @@ export default function DisputeForm() {
             ))}
           </select>
         </div>
-
-        {/* Plaignant & Motif */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Nom & Prénoms du Plaignant</label>
+        <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Plaignant</label>
             <input
               type="text"
               name="plaintiffName"
@@ -200,6 +197,13 @@ export default function DisputeForm() {
               <option value="AUTRE" className="text-amber-600 font-bold">+ Ajouter un autre motif...</option>
             </select>
           </div>
+
+        {/* Plaignant & Motif */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          
+
+          
         </div>
 
         {formData.reason === "AUTRE" && (

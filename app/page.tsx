@@ -1,112 +1,162 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-// Importations strictes par défaut de vos composants métiers
-import CompanyForm from "../components/CompanyForm";
-import DisputeForm from "../components/DisputeForm";
-import TerritoryManager from "../components/TerritoryManager";
-import SectorManager from "../components/SectorManager";
-import DashboardStats from "../components/DashboardStats";
-import DisputeList from "../components/DisputeList";
-import LoginForm from "../components/LoginForm"; 
-
-// Initialisation globale du client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
-);
+import { useState } from "react";
+import DashboardAnalytics from "@/components/DashboardAnalytics";
+import DisputeList from "@/components/DisputeList";
+import DisputeForm from "@/components/DisputeForm";
+import CompanyForm from "@/components/CompanyForm";
+import SectorManager from "@/components/SectorManager";
+import InspectionVisits from "@/components/InspectionVisits";
 
 export default function Home() {
-  const [session, setSession] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  // Gestion de l'onglet actif pour une navigation fluide
+  const [activeTab, setActiveTab] = useState<"analytics" | "litiges" | "visites" | "configuration">("analytics");
 
-  useEffect(() => {
-    // 1. Vérifier la session active au chargement
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
-
-    // 2. Écouter les changements d'état d'authentification (connexion/déconnexion)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-slate-900 border-t-transparent"></div>
-      </div>
-    );
-  }
-
-  // Si l'utilisateur n'est pas connecté, on affiche l'écran de connexion exclusif
-  if (!session) {
-    return <LoginForm onLoginSuccess={() => window.location.reload()} />;
-  }
-
-  // Si connecté, accès complet au tableau de bord MUDEKO
   return (
-    <main className="min-h-screen bg-slate-50 pb-12">
-      {/* Barre de navigation */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <span className="text-xl font-black text-slate-900 tracking-tight">DGT</span>
-            <span className="bg-amber-100 text-amber-800 text-xs font-semibold px-2 py-0.5 rounded">
-              Inspecteur
-            </span>
+    <div className="min-h-screen bg-slate-100 text-slate-900 font-sans">
+      
+      {/* --- BANDEAU ET HEADER OFFICIEL --- */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-3">
+            <div className="bg-slate-900 text-amber-400 p-2.5 rounded-xl font-black tracking-wider text-xl shadow-inner">
+              DGT
+            </div>
+            <div>
+              <h1 className="text-lg font-black tracking-tight text-slate-800 uppercase">
+                DGT — Inspection du Travail
+              </h1>
+              <p className="text-xs text-slate-500 font-medium">
+                Plateforme Territoriale de Gestion et de Suivi des Recours
+              </p>
+            </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-slate-600 hidden sm:inline-block">
-              {session.user?.email}
-            </span>
+          
+          {/* Badge de localisation de l'antenne régionale */}
+          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-xs text-slate-600 font-semibold shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Région du Tchologo • Côte d'Ivoire
+          </div>
+        </div>
+
+        {/* --- BARRE DE NAVIGATION (ONGLETS) --- */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-100">
+          <nav className="flex space-x-6 -mb-px overflow-x-auto">
             <button
-              onClick={() => supabase.auth.signOut()}
-              className="text-sm font-medium text-rose-600 hover:text-rose-700 transition"
+              onClick={() => setActiveTab("analytics")}
+              className={`py-3.5 px-1 border-b-2 font-bold text-sm whitespace-nowrap transition ${
+                activeTab === "analytics"
+                  ? "border-slate-900 text-slate-900"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
+              }`}
             >
-              Déconnexion
+              📈 Tableau de Bord
             </button>
-          </div>
+            <button
+              onClick={() => setActiveTab("litiges")}
+              className={`py-3.5 px-1 border-b-2 font-bold text-sm whitespace-nowrap transition ${
+                activeTab === "litiges"
+                  ? "border-slate-900 text-slate-900"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
+              }`}
+            >
+              ⚖️ Litiges & Recours
+            </button>
+            <button
+              onClick={() => setActiveTab("visites")}
+              className={`py-3.5 px-1 border-b-2 font-bold text-sm whitespace-nowrap transition ${
+                activeTab === "visites"
+                  ? "border-slate-900 text-slate-900"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
+              }`}
+            >
+              📆 Contrôles de Terrain
+            </button>
+            <button
+              onClick={() => setActiveTab("configuration")}
+              className={`py-3.5 px-1 border-b-2 font-bold text-sm whitespace-nowrap transition ${
+                activeTab === "configuration"
+                  ? "border-slate-900 text-slate-900"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
+              }`}
+            >
+              ⚙️ Établissements & Secteurs
+            </button>
+          </nav>
         </div>
       </header>
 
-      {/* Contenu principal */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-10">
-        {/* Statistiques générales */}
-        <DashboardStats />
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Section Établissements */}
-          <div className="space-y-6">
-            <h2 className="text-xl font-bold text-slate-800 px-2">🏢 Registre des Établissements</h2>
-            <CompanyForm />
+      {/* --- CONTENU PRINCIPAL DYNAMIQUE --- */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* ONGLET 1 : STATISTIQUES ET GRAPHIQUES */}
+        {activeTab === "analytics" && (
+          <div className="space-y-6 animate-fadeIn">
+            <DashboardAnalytics />
           </div>
+        )}
 
-          {/* Section Conflits et Litiges */}
-          <div className="space-y-6">
-            <h2 className="text-xl font-bold text-slate-800 px-2">⚖️ Suivi des Litiges Professionnels</h2>
-            <DisputeForm />
+        {/* ONGLET 2 : ENREGISTREMENT ET SUIVI DES LITIGES */}
+        {activeTab === "litiges" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start animate-fadeIn">
+            <div className="lg:col-span-1 space-y-4 sticky top-24">
+              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <h2 className="text-sm font-black text-slate-800 uppercase tracking-wider mb-2">
+                  Ouvrir un Dossier
+                </h2>
+                <p className="text-xs text-slate-400 leading-relaxed mb-4">
+                  Saisissez les réclamations d'un travailleur ou d'une organisation syndicale pour générer un numéro de recours.
+                </p>
+                <DisputeForm />
+              </div>
+            </div>
+            <div className="lg:col-span-2">
+              <DisputeList />
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Section Listes complètes */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-          <h2 className="text-xl font-bold text-slate-800 mb-6">📋 Historique des Recours & Auditions</h2>
-          <DisputeList />
-        </div>
+        {/* ONGLET 3 : PLANIFICATION ET RAPPORTS DE VISITES */}
+        {activeTab === "visites" && (
+          <div className="animate-fadeIn">
+            <InspectionVisits />
+          </div>
+        )}
 
-        {/* Section Paramétrage Territorial */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-slate-200">
-          <TerritoryManager />
-          <SectorManager />
+        {/* ONGLET 4 : CONFIGURATION DES ÉTABLISSEMENTS ET SECTEURS D'ACTIVITÉ */}
+        {activeTab === "configuration" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start animate-fadeIn">
+            <div className="lg:col-span-1 space-y-6">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                <h2 className="text-sm font-black text-slate-800 uppercase tracking-wider mb-1">
+                  Nouveau Secteur
+                </h2>
+                <p className="text-xs text-slate-400 mb-4">
+                  Ajouter des branches d'activité (BTP, Industrie, etc.)
+                </p>
+                <SectorManager />
+              </div>
+            </div>
+            <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+              <h2 className="text-sm font-black text-slate-800 uppercase tracking-wider mb-1">
+                Enregistrer un Établissement
+              </h2>
+              <p className="text-xs text-slate-400 mb-4">
+                Déclarez les entreprises locales pour les lier aux futurs litiges et contrôles de routine.
+              </p>
+              <CompanyForm />
+            </div>
+          </div>
+        )}
+
+      </main>
+
+      {/* --- FOOTER ADMINISTRATIF --- */}
+      <footer className="bg-white border-t border-slate-200 mt-16 py-6">
+        <div className="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 font-medium">
+          DGT v2.1 — Système d'Information Intégré de l'Inspection du Travail • Ministère de l'Emploi et de la Protection Sociale.
         </div>
-      </div>
-    </main>
+      </footer>
+    </div>
   );
 }
