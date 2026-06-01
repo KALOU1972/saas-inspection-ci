@@ -33,7 +33,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
 
       if (authError) throw authError;
 
-      // Déclencher le succès si aucune erreur
+      // Déclencher le succès et recharger la session si aucune erreur
       onLoginSuccess();
     } catch (err: any) {
       console.error("Erreur d'authentification :", err);
