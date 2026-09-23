@@ -2,6 +2,10 @@
 
 **Plateforme Territoriale de Gestion et de Suivi des Recours** — écosystème numérique de l'inspection du travail (Côte d'Ivoire) : dossiers d'entreprises, litiges & recours, contrôles de terrain, PV de manquement, et studio d'assistance IA « Prompt Stack 7 couches ».
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FKALOU1972%2Fsaas-inspection-ci&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY&project-name=dgt-inspection&repository-name=saas-inspection-ci)
+
+> 💡 Le bouton ci-dessus clone le dépôt dans votre compte GitHub/Vercel et vous demande les 2 variables Supabase pendant l'assistant — aucun réglage manuel ensuite.
+
 ## ✨ Fonctionnalités
 
 | Onglet | Contenu |
@@ -34,6 +38,12 @@ Un plan de secours (clés de développement) est intégré dans `lib/supabase.ts
 ## ☁️ Déploiement sur Vercel
 
 L'application est un Next.js standard, **prête pour Vercel sans configuration** (polices auto-hébergées, build vérifié).
+
+### Option A — En un clic (recommandé)
+
+Cliquer le bouton **Deploy** en haut de ce README et suivre l'assistant (connexion GitHub → nom du projet → valeurs Supabase → Deploy).
+
+### Option B — Manuellement
 
 1. Pousser le dépôt sur GitHub (déjà fait — voir la branche `main`) ;
 2. Aller sur [vercel.com/new](https://vercel.com/new) et **se connecter avec GitHub** ;
