@@ -1,14 +1,10 @@
 "use client";
 
+import { supabase } from "@/lib/supabase";
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { generatePV } from "../lib/generatePV";
 
 // Initialisation du client Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
-);
 
 interface Litige {
   id: string;

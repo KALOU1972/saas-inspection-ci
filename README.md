@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏛️ DGT — Inspection du Travail
 
-## Getting Started
+**Plateforme Territoriale de Gestion et de Suivi des Recours** — écosystème numérique de l'inspection du travail (Côte d'Ivoire) : dossiers d'entreprises, litiges & recours, contrôles de terrain, PV de manquement, et studio d'assistance IA « Prompt Stack 7 couches ».
 
-First, run the development server:
+## ✨ Fonctionnalités
+
+| Onglet | Contenu |
+|--------|---------|
+| 📈 Tableau de Bord | Statistiques et graphiques (recharts) |
+| ⚖️ Litiges & Recours | Ouverture de dossiers, suivi, génération de PV (jsPDF) |
+| 📆 Contrôles de Terrain | Planification et rapports de visites d'inspection |
+| ⚙️ Établissements & Secteurs | Entreprises, secteurs d'activité, territoires |
+| 🧠 Prompt Stack IA | Générateur de mega-prompt 7 couches pour assister une Direction Régionale du Travail (méthode : [`docs/prompt-stack-drt.md`](docs/prompt-stack-drt.md)) |
+
+## 🚀 Démarrage local
 
 ```bash
+npm install
+cp .env.example .env.local   # renseigner les clés Supabase
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrir [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔧 Variables d'environnement
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Description |
+|----------|-------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | URL du projet Supabase (Settings → API) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clé anonyme Supabase (protégée par RLS) |
 
-## Learn More
+Un plan de secours (clés de développement) est intégré dans `lib/supabase.ts` si les variables sont absentes — à réserver au développement.
 
-To learn more about Next.js, take a look at the following resources:
+## ☁️ Déploiement sur Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+L'application est un Next.js standard, **prête pour Vercel sans configuration** (polices auto-hébergées, build vérifié).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Pousser le dépôt sur GitHub (déjà fait — voir la branche `main`) ;
+2. Aller sur [vercel.com/new](https://vercel.com/new) et **se connecter avec GitHub** ;
+3. **Importer** le dépôt `KALOU1972/saas-inspection-ci` ;
+4. Dans **Environment Variables**, ajouter `NEXT_PUBLIC_SUPABASE_URL` et `NEXT_PUBLIC_SUPABASE_ANON_KEY` (valeurs dans `.env.example`) ;
+5. Cliquer **Deploy** — l'application est en ligne sur `https://<projet>.vercel.app`.
 
-## Deploy on Vercel
+Chaque push sur `main` redéploie automatiquement ; chaque pull request génère un aperçu (preview) dédié.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🗄️ Base de données (Supabase)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Tables utilisées : `etablissements`, `sectors`, `departments`, `sub_prefectures`, `visites`, dossiers/litiges. Le référentiel des infractions (Code du travail : CNPS, SMIG, CSST, EPI, registres) est embarqué dans [`lib/codeDuTravail.ts`](lib/codeDuTravail.ts).
+
+> ⚠️ Activer **Row Level Security** sur toutes les tables avant toute mise en production réelle.

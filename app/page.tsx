@@ -7,10 +7,11 @@ import DisputeForm from "@/components/DisputeForm";
 import CompanyForm from "@/components/CompanyForm";
 import SectorManager from "@/components/SectorManager";
 import InspectionVisits from "@/components/InspectionVisits";
+import PromptStackStudio from "@/components/PromptStackStudio";
 
 export default function Home() {
   // Gestion de l'onglet actif pour une navigation fluide
-  const [activeTab, setActiveTab] = useState<"analytics" | "litiges" | "visites" | "configuration">("analytics");
+  const [activeTab, setActiveTab] = useState<"analytics" | "litiges" | "visites" | "configuration" | "promptstack">("analytics");
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 font-sans">
@@ -82,6 +83,16 @@ export default function Home() {
             >
               ⚙️ Établissements & Secteurs
             </button>
+            <button
+              onClick={() => setActiveTab("promptstack")}
+              className={`py-3.5 px-1 border-b-2 font-bold text-sm whitespace-nowrap transition ${
+                activeTab === "promptstack"
+                  ? "border-slate-900 text-slate-900"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
+              }`}
+            >
+              🧠 Prompt Stack IA
+            </button>
           </nav>
         </div>
       </header>
@@ -146,6 +157,13 @@ export default function Home() {
               </p>
               <CompanyForm />
             </div>
+          </div>
+        )}
+
+        {/* ONGLET 5 : STUDIO PROMPT STACK 7 COUCHES (ASSISTANT IA) */}
+        {activeTab === "promptstack" && (
+          <div className="animate-fadeIn">
+            <PromptStackStudio />
           </div>
         )}
 
